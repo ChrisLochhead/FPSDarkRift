@@ -3,6 +3,8 @@ using DarkRift;
 using DarkRift.Client;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 using TMPro;
 public class LoginManager : MonoBehaviour
 {
@@ -23,6 +25,41 @@ public class LoginManager : MonoBehaviour
     {
         LoginWindow.SetActive(false);
         SubmitLoginButton.onClick.AddListener(OnSubmitLogin);
+
+        GlobalManager.Instance.Client.MessageReceived += OnMessage;
+    }
+
+    void OnDestroy()
+    {
+        GlobalManager.Instance.Client.MessageReceived -= OnMessage;
+    }
+
+    private void OnMessage(object sender, MessageReceivedEventArgs e)
+    {
+        using (Message m = e.GetMessage())
+        {
+            switch ((Tags)m.Tag)
+            {
+                case Tags.LoginRequestDenied:
+                    OnLoginDecline();
+                    break;
+                case Tags.LoginRequestAccepted:
+                    OnLoginAccept(m.Deserialize<LoginInfoData>());
+                    break;
+            }
+        }
+    }
+
+    public void OnLoginDecline()
+    {
+        LoginWindow.SetActive(true);
+    }
+
+    public void OnLoginAccept(LoginInfoData data)
+    {
+        GlobalManager.Instance.PlayerId = data.Id;
+        GlobalManager.Instance.LastRecievedLobbyInfoData = data.Data;
+        SceneManager.LoadScene("Lobby");
     }
 
     public void StartLoginProcess()

@@ -16,6 +16,11 @@ public class GlobalManager : MonoBehaviour
     [Header("References")]
     public UnityClient Client;
 
+    [Header("Public Fields")]
+    public ushort PlayerId;
+    public LobbyInfoData LastRecievedLobbyInfoData;
+
+
     void Awake()
     {
         if (Instance != null)

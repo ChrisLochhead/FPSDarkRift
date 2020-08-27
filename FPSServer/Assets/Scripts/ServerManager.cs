@@ -41,11 +41,6 @@ public class ServerManager : MonoBehaviour
         Server.ClientManager.ClientDisconnected -= OnClientDisconnect;
     }
 
-    private void OnClientDisconnect(object sender, ClientDisconnectedEventArgs e)
-    {
-        e.Client.MessageReceived -= OnMessage;
-    }
-
     private void OnClientConnect(object sender, ClientConnectedEventArgs e)
     {
         e.Client.MessageReceived += OnMessage;
@@ -63,6 +58,17 @@ public class ServerManager : MonoBehaviour
                     break;
             }
         }
+    }
+
+    private void OnClientDisconnect(object sender, ClientDisconnectedEventArgs e)
+    {
+        IClient client = e.Client;
+        ClientConnection p;
+        if (Players.TryGetValue(client.ID, out p))
+        {
+            p.OnClientDisconnect(sender, e);
+        }
+        e.Client.MessageReceived -= OnMessage;
     }
 
     private void OnclientLogin(IClient client, LoginRequestData data)

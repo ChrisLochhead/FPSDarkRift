@@ -196,9 +196,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83d0626b3291ea54b8a4cf7a0ef636bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IpAdress: 
-  Port: 0
-  Client: {fileID: 0}
+  IpAdress: 127.0.0.1
+  Port: 4296
+  Client: {fileID: 289357587}
+  PlayerId: 0
 --- !u!114 &289357587
 MonoBehaviour:
   m_ObjectHideFlags: 0
