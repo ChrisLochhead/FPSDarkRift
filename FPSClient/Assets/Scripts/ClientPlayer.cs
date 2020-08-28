@@ -62,11 +62,13 @@ public class ClientPlayer : MonoBehaviour
             Camera.main.transform.SetParent(transform);
             Camera.main.transform.localPosition = new Vector3(0, 0, -10);
             Camera.main.transform.localRotation = Quaternion.identity;
+            Logic.CharacterController.enabled = false;
             transform.position = new Vector3(0, 50, 0);
-            Interpolation.CurrentData = new PlayerUpdateData(Id, 0, new Vector3(0,50,0), Quaternion.identity);
+            Interpolation.CurrentData = new PlayerUpdateData(Id, 0, new Vector3(5,0,12), Quaternion.identity);
+            Logic.CharacterController.enabled = true;
         }
 
-        SpawnStateInfo ssi = new SpawnStateInfo(new Vector3(0, 50, 0));
+        SpawnStateInfo ssi = new SpawnStateInfo(new Vector3(5, 0, 12));
 
         using (Message m = Message.Create((ushort)Tags.SpawnDataInfo, ssi))
         {
@@ -152,13 +154,17 @@ public class ClientPlayer : MonoBehaviour
 
             Quaternion rot = Quaternion.Euler(pitch, yaw, 0);
 
-            PlayerInputData inputData = new PlayerInputData(inputs, rot, 0/*here we later write the last recieved tick*/);
+            PlayerInputData inputData = new PlayerInputData(inputs, rot, 0);// GameManager.Instance.ClientTick);// 0/*here we later write the last recieved tick*/);
 
             //PlayerUpdateData updateData = Logic.GetNextFrameData(inputData, data);
             //transform.rotation = data.LookDirection;
-
+            Debug.Log("position on update: " + Interpolation.CurrentData.Position);
+            Logic.CharacterController.enabled = false;
             transform.position = Interpolation.CurrentData.Position;
+            Logic.CharacterController.enabled = true;
+            Debug.Log("position before: " + transform.position  + "and : " + Logic.gameObject.transform.position);
             PlayerUpdateData updateData = Logic.GetNextFrameData(inputData, Interpolation.CurrentData);
+            Debug.Log("position after: " + transform.position);
             Interpolation.SetFramePosition(updateData);
 
             using (Message m = Message.Create((ushort)Tags.GamePlayerInput, inputData))

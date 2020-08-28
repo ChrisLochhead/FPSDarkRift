@@ -57,7 +57,9 @@ public class PlayerLogic : MonoBehaviour
         movement = movement * Time.fixedDeltaTime;
         movement = movement + gravity * Time.fixedDeltaTime;
 
+        Debug.Log("Position bfore" + transform.position);
         CharacterController.Move(new Vector3(0, -0.001f, 0));
+        Debug.Log("Position then" + transform.position);
         if (CharacterController.isGrounded)
         {
             if (space)
@@ -69,10 +71,10 @@ public class PlayerLogic : MonoBehaviour
         {
             gravity -= new Vector3(0, GravityConstant, 0);
         }
-
+        Debug.Log("before position : " + transform.localPosition + "and movement : " + movement);
         CharacterController.Move(movement);
-
-        return new PlayerUpdateData(currentUpdateData.Id, gravity.y, transform.localPosition, input.LookDirection);
+        Debug.Log("calculated position : " + transform.position);
+        return new PlayerUpdateData(currentUpdateData.Id, gravity.y, transform.position, input.LookDirection);
 
     }
 
